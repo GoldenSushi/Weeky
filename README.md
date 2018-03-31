@@ -1,5 +1,5 @@
-#Weeky
-####My sad busy week
+# Weeky
+#### My sad busy week
 
 ~~The best android app in the world.~~  
 Well, actually this is just a practice from someone who is starting to lean how to program, and it is almost useless.
