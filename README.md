@@ -1,6 +1,6 @@
 #Weeky
 
-~~The best android app in the world.~~
+~~The best android app in the world.~~  
 Well, actually this is just a practice from someone who is starting to lean how to program, and it is almost useless.
 
 This app is basically an agenda, a datebook for students, that was made to register classes and their respective classrooms at a given hour of the day.
