@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">Weeky</string>
+    <string name="hour_7">7:00</string>
+    <string name="hour_8">8:00</string>
+    <string name="hour_9">9:00</string>
+    <string name="hour_10">10:00</string>
+    <string name="hour_11">11:00</string>
+    <string name="hour_12">12:00</string>
+    <string name="hour_13">13:00</string>
+    <string name="hour_14">14:00</string>
+    <string name="hour_15">15:00</string>
+    <string name="hour_16">16:00</string>
+    <string name="hour_17">17:00</string>
+    <string name="hour_18">18:00</string>
+    <string name="discipline">Disciplina:</string>
+    <string name="class_room">Sala:</string>
+    <string name="enter_discipline">Disciplina</string>
+    <string name="enter_classroom">Sala</string>
+
+    <!--To change hour format do it here! -->
+    <string-array name="hours">
+        <item>7:00</item>
+        <item>8:00</item>
+        <item>9:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12:00</item>
+        <item>13:00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+    </string-array>
+
+    <string-array name="day_names">
+        <item>Segunda</item>
+        <item>Terça</item>
+        <item>Quarta</item>
+        <item>Quinta</item>
+        <item>Sexta</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
+
+
+
+</resources>
