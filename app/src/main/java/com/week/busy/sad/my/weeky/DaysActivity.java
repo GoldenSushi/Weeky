@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.week.busy.sad.my.weeky.DataStorage.Data;
 import com.week.busy.sad.my.weeky.fragments.scripts.DayFragments;
 
 public class DaysActivity extends FragmentActivity {
@@ -54,7 +55,7 @@ public class DaysActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return 7;
+            return Data.WEEK_DAYS;
         }
 
         @Override
