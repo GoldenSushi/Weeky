@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.week.busy.sad.my.weeky.DataStorage.Data;
 import com.week.busy.sad.my.weeky.DataStorage.DataStore;
 import com.week.busy.sad.my.weeky.R;
 
@@ -32,6 +33,8 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
 
     private String[] disciplineDataString;
     private String[] roomDataString;
+
+    private boolean isBeingEdited = false;
 
     private final Context context;
     private final String DISCIPLINE_FILE_NAME;
@@ -91,13 +94,13 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
 
                 //checks if the is another item being edited
                 //if there is, closes the edition view
-                if (DataStore.holderUnderEdit != null && !DataStore.holderUnderEdit.equals(v.getTag())) {
-                    DataStore.holderUnderEdit.onClickEditInvisible();
-                    DataStore.holderUnderEdit.setBackgroundColor();
+                if (Data.holderUnderEdit != null && !Data.holderUnderEdit.equals(v.getTag())) {
+                    Data.holderUnderEdit.onClickEditInvisible();
+                    Data.holderUnderEdit.setBackgroundColor();
                 }
 
                 //stores the holder being edited in the data store
-                DataStore.holderUnderEdit = (RecyclerVHolder) v.getTag();
+                Data.holderUnderEdit = (RecyclerVHolder) v.getTag();
 
                 return false;
             }
@@ -134,10 +137,10 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (DataStore.holderUnderEdit != null && !v.getTag().equals(DataStore.holderUnderEdit)) {
-                    DataStore.holderUnderEdit.onClickEditInvisible();
+                if (Data.holderUnderEdit != null && !v.getTag().equals(Data.holderUnderEdit)) {
+                    Data.holderUnderEdit.onClickEditInvisible();
 
-                    DataStore.holderUnderEdit.setBackgroundColor();
+                    Data.holderUnderEdit.setBackgroundColor();
                 }
             }
         });
@@ -272,13 +275,11 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         if (!insertedTextDiscipline.isEmpty()) {
             getDisciplineText().setText(insertedTextDiscipline);
             getDisciplineDataString()[viewPosition] = insertedTextDiscipline;
-            setDisciplineDataString(DataStore.createFileString(getDisciplineDataString()));
             DataStore.store(getContext(), getDISCIPLINE_FILE_NAME(), getDisciplineDataString());
         }
         if (!insertedTextRoom.isEmpty()) {
             getRoomText().setText(insertedTextRoom);
             getRoomDataString()[viewPosition] = insertedTextRoom;
-            setRoomDataString(DataStore.createFileString(getRoomDataString()));
             DataStore.store(getContext(), getROOM_FILE_NAME(), getRoomDataString());
         }
 
