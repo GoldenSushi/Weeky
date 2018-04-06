@@ -49,7 +49,7 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
 
 
 
-    //<Constructor **********************************************************************************************************************************************************
+    //<Constructor *********************************************************************************
     public RecyclerVHolder(final View itemView,
                            final Context context,
                            String disciplineFileName,
@@ -95,11 +95,11 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         //Setting Click Handlers/>
 
     }
-    //Constructor/>******************************************************************************************************************************************************************
+    //Constructor/>*********************************************************************************
 
 
 
-    //<Getters and Setters **********************************************************************************************************************************************************
+    //<Getters and Setters *************************************************************************
     //<Getters
     public TextView getHours() {
         return hours;
@@ -110,10 +110,10 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
     public TextView getRoomText() {
         return textViews.get(1);
     }
-    public EditText getEditTextDiscipline() {
+    private EditText getEditTextDiscipline() {
         return editTexts.get(0);
     }
-    public EditText getEditTextRoom() {
+    private EditText getEditTextRoom() {
         return editTexts.get(1);
     }
     public String[] getDisciplineDataString() {
@@ -122,7 +122,7 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
     public String[] getRoomDataString() {
         return roomDataString;
     }
-    public Context getContext() {
+    private Context getContext() {
         return context;
     }
     public String getDISCIPLINE_FILE_NAME() {
@@ -132,11 +132,11 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         return ROOM_FILE_NAME;
     }
     //Getters/>
-    //Getters and Setters/> **********************************************************************************************************************************************************
+    //Getters and Setters/> ************************************************************************
 
 
 
-    //<Click Handlers code **********************************************************************************************************************************************************
+    //<Click Handlers code *************************************************************************
     @OnClick({ R.id.edit_button, R.id.delete_button })
     public void onClickButtons (Button button) {
 
@@ -174,7 +174,7 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
     };
 
     //sets to visible the edit interface
-    public void onClickEditVisible() {
+    void onClickEditVisible() {
         ButterKnife.apply(textViews, INVISIBLE);
         ButterKnife.apply(editTexts, VISIBLE);
         ButterKnife.apply(frames, VISIBLE);
@@ -182,7 +182,7 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
     }
 
     //sets to invisible the edit interface
-    public void onClickEditInvisible() {
+    void onClickEditInvisible() {
         ButterKnife.apply(textViews, VISIBLE);
         ButterKnife.apply(editTexts, INVISIBLE);
         ButterKnife.apply(frames, INVISIBLE);
@@ -190,7 +190,7 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
     }
 
     //refreshes data strings and calls the text storage function
-    public void onClickEdit() {
+    void onClickEdit() {
         int viewPosition = getAdapterPosition();
 
         String insertedTextDiscipline = getEditTextDiscipline().getText().toString();
@@ -208,7 +208,8 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void onClickDelete () {
+    //clears the text inside the item and deletes its data from the data strings
+    void onClickDelete () {
 
         getDisciplineText().setText(" ");
         getRoomText().setText(" ");
@@ -217,33 +218,30 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         DataStore.store(getContext(), getDISCIPLINE_FILE_NAME(), getDisciplineDataString());
         DataStore.store(getContext(), getROOM_FILE_NAME(), getRoomDataString());
     }
-    //Click Handlers code/> **********************************************************************************************************************************************************
+    //Click Handlers code/> ************************************************************************
 
 
 
-    //<Helpers **********************************************************************************************************************************************************
+    //<Helpers *************************************************************************************
     //checks if there is another item being edited
-    public boolean isAnotherUnderEdit(View v) {
-        if (Data.holderUnderEdit != null && !Data.holderUnderEdit.equals(v.getTag())) {
-            return true;
-        }
-        return false;
+    private boolean isAnotherUnderEdit(View v) {
+        return Data.holderUnderEdit != null && !Data.holderUnderEdit.equals(v.getTag());
     }
 
     //stores the holder being edited in the data store
-    public void bindUnderEdit (View v) {
+    private void bindUnderEdit (View v) {
         Data.holderUnderEdit = (RecyclerVHolder) v.getTag();
     }
 
     //resets reference if there was another item being added
-    public void unbindUnderEdit(View v) {
+    private void unbindUnderEdit(View v) {
         Data.holderUnderEdit.onClickEditInvisible();
         Data.holderUnderEdit.setBackgroundColor();
         Data.holderUnderEdit = null;
     }
 
     //turns keyboard off after clicking the edit or delete button
-    public void turnOffKeyboard(View v) {
+    void turnOffKeyboard(View v) {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
@@ -284,13 +282,14 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    //sets highlight color when item is being edited
     private void setEditingColor (View v) {
         v.setBackgroundColor(res.getColor(R.color.colorPrimary));
     }
 
     //recovers the text from the view and put it in EditText
     //so the user won't need to write it again in case he/she wants to edit
-    public void recoverEditText() {
+    private void recoverEditText() {
         if (!isDisciplineTextEmpty()) {
             getEditTextDiscipline().setText(getDisciplineText().getText().toString());
         }
@@ -298,6 +297,6 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
             getEditTextRoom().setText(getRoomText().getText().toString());
         }
     }
-    //Helpers/> **********************************************************************************************************************************************************
+    //Helpers/> ************************************************************************************
 
 }

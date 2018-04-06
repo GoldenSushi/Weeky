@@ -2,8 +2,6 @@ package com.week.busy.sad.my.weeky.DataStorage;
 
 import android.content.Context;
 
-import com.week.busy.sad.my.weeky.Utilities.RecyclerVHolder;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -84,7 +82,6 @@ public final class DataStore {
             roomData[i] = " ";
         }
     }
-
 
     //creates string (index1;data1;index2; ... ) that will be used to write the text file
     public static String createTextString(String[] list) {

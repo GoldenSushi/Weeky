@@ -1,19 +1,14 @@
 package com.week.busy.sad.my.weeky.Utilities;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.week.busy.sad.my.weeky.DataStorage.DataStore;
 import com.week.busy.sad.my.weeky.R;
 
-/**
- * Created by user on 24/03/2018.
- */
+
 
 public class RecyclerVAdapter extends RecyclerView.Adapter<RecyclerVHolder> {
 
@@ -82,11 +77,10 @@ public class RecyclerVAdapter extends RecyclerView.Adapter<RecyclerVHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerVHolder holder, int position) {
-
         holder.getHours().setText(HOURS_STRINGS[position]);
-
-        //sets the data retrieved for the data strings
+        //sets the data retrieved from holder's the data strings
         String[] discipline_data = holder.getDisciplineDataString();
+
         if (discipline_data[position] == null || discipline_data[position] == "") {
             holder.getDisciplineText().setText(" ");
         } else {
@@ -105,6 +99,7 @@ public class RecyclerVAdapter extends RecyclerView.Adapter<RecyclerVHolder> {
             holder.onClickEditInvisible();
         }
 
+        //sets a highlight background color if item has any content
         holder.setBackgroundColor();
     }
 
