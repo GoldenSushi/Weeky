@@ -112,30 +112,38 @@ public class DayFragments extends Fragment implements DataManager {
 
         //sets file names
         switch (position) {
+
             case 0 : fragment.setDISCIPLINE_FILE_NAME(SUNDAY.getDiscipline());
                     fragment.setROOM_FILE_NAME(SUNDAY.getRoom());
-            break;
+                return  fragment;
+
             case 1 : fragment.setDISCIPLINE_FILE_NAME(MONDAY.getDiscipline());
                     fragment.setROOM_FILE_NAME(MONDAY.getRoom());
-                break;
+                return  fragment;
+
             case 2 : fragment.setDISCIPLINE_FILE_NAME(TUESDAY.getDiscipline());
                     fragment.setROOM_FILE_NAME(TUESDAY.getRoom());
-                break;
+                return  fragment;
+
             case 3 : fragment.setDISCIPLINE_FILE_NAME(WEDNESDAY.getDiscipline());
                     fragment.setROOM_FILE_NAME(WEDNESDAY.getRoom());
-                break;
+                return  fragment;
+
             case 4 : fragment.setDISCIPLINE_FILE_NAME(THURSDAY.getDiscipline());
                     fragment.setROOM_FILE_NAME(THURSDAY.getRoom());
-                break;
+                return  fragment;
+
             case 5 : fragment.setDISCIPLINE_FILE_NAME(FRIDAY.getDiscipline());
                     fragment.setROOM_FILE_NAME(FRIDAY.getRoom());
-                break;
+                return  fragment;
+
             case 6 : fragment.setDISCIPLINE_FILE_NAME(SATURDAY.getDiscipline());
                     fragment.setROOM_FILE_NAME(SATURDAY.getRoom());
-                break;
-        }
+                return  fragment;
 
-        return  fragment;
+            default : return null;
+
+        }
     }
 
     @Override

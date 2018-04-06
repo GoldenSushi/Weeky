@@ -3,9 +3,9 @@ package com.week.busy.sad.my.weeky.Utilities;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -16,25 +16,31 @@ import com.week.busy.sad.my.weeky.DataStorage.Data;
 import com.week.busy.sad.my.weeky.DataStorage.DataStore;
 import com.week.busy.sad.my.weeky.R;
 
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class RecyclerVHolder extends RecyclerView.ViewHolder {
 
+    @BindView(R.id.hour_text) TextView hours;
 
-    private TextView hours;
-    private TextView disciplineText;
-    private TextView roomText;
+    @BindViews({ R.id.discipline_text, R.id.classroom_text })
+    List<TextView> textViews;
 
-    private EditText editTextDiscipline;
-    private EditText editTextRoom;
+    @BindViews({ R.id.insert_text_discipline, R.id.insert_text_classroom })
+    List<EditText> editTexts;
 
-    private ConstraintLayout editFrame;
-    private Button editButton;
-    private ConstraintLayout deleteFrame;
-    private Button deleteButton;
+    @BindViews({ R.id.edit_button, R.id.delete_button })
+    List<Button> buttons;
+
+    @BindViews({ R.id.edit_frame, R.id.delete_frame })
+    List<ConstraintLayout> frames;
 
     private String[] disciplineDataString;
     private String[] roomDataString;
-
-    private boolean isBeingEdited = false;
 
     private final Context context;
     private final String DISCIPLINE_FILE_NAME;
@@ -42,6 +48,8 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
     private final Resources res;
 
 
+
+    //<Constructor **********************************************************************************************************************************************************
     public RecyclerVHolder(final View itemView,
                            final Context context,
                            String disciplineFileName,
@@ -50,20 +58,13 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
                            String[] roomDataString) {
         super(itemView);
 
-        //text
-        this.hours = (TextView) itemView.findViewById(R.id.hour_text);
-        this.disciplineText = (TextView) itemView.findViewById(R.id.discipline_text);
-        this.roomText = (TextView) itemView.findViewById(R.id.classroom_text);
+        ButterKnife.bind(this, itemView);
 
-        //text input
-        this.editTextDiscipline = (EditText) itemView.findViewById(R.id.insert_text_discipline);
-        this.editTextRoom = (EditText) itemView.findViewById(R.id.insert_text_classroom);
+        //context
+        this.context = context;
 
-        //buttons
-        this.editFrame = (ConstraintLayout) itemView.findViewById(R.id.edit_frame);
-        this.editButton = (Button) itemView.findViewById(R.id.edit_button);
-        this.deleteFrame = (ConstraintLayout) itemView.findViewById(R.id.delete_frame);
-        this.deleteButton = (Button) itemView.findViewById(R.id.delete_button);
+        //resources
+        this.res = context.getResources();
 
         //data strings
         this.disciplineDataString = disciplineDataString;
@@ -73,200 +74,123 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         this.DISCIPLINE_FILE_NAME = disciplineFileName;
         this.ROOM_FILE_NAME = roomFileName;
 
-        //context
-        this.context = context;
-
-        //resources
-        this.res = context.getResources();
-
 
         //<Setting Click Handlers
-        itemView.setOnLongClickListener(new View.OnLongClickListener(){
-            @Override
-            public boolean onLongClick(View v) {
-
-                //sets color highlight when editing begins
-                v.setBackgroundColor(res.getColor(R.color.colorPrimary));
-
-                //sets visibility on and recovers the text so user can edit
-                onClickEditVisible();
-                recoverEditText();
-
-                //checks if the is another item being edited
-                //if there is, closes the edition view
-                if (Data.holderUnderEdit != null && !Data.holderUnderEdit.equals(v.getTag())) {
-                    Data.holderUnderEdit.onClickEditInvisible();
-                    Data.holderUnderEdit.setBackgroundColor();
-                }
-
-                //stores the holder being edited in the data store
-                Data.holderUnderEdit = (RecyclerVHolder) v.getTag();
-
-                return false;
-            }
-        });
-
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                onButtonClick();
-                onClickEditInvisible();
-
-                //this hides the keyboard after pressing the button
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                //changes item's background color if text is entered
-                setBackgroundColor();
-            }
-        });
-
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickDelete();
-                onClickEditInvisible();
-
-                //changes item's background color if text is entered
-                setBackgroundColor();
-            }
-        });
-
         //checks if the view being clicked is the one being edited. if it isn't, sets the edit screen invisible
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Data.holderUnderEdit != null && !v.getTag().equals(Data.holderUnderEdit)) {
-                    Data.holderUnderEdit.onClickEditInvisible();
-
-                    Data.holderUnderEdit.setBackgroundColor();
+                if (isAnotherUnderEdit(v)){
+                    unbindUnderEdit(v);
+                } else {
+                    //sets color highlight when editing begins
+                    setEditingColor(v);
+                    //sets visibility on and recovers the text so user can edit
+                    onClickEditVisible();
+                    recoverEditText();
+                    bindUnderEdit(v);
                 }
             }
         });
         //Setting Click Handlers/>
 
     }
+    //Constructor/>******************************************************************************************************************************************************************
 
 
+
+    //<Getters and Setters **********************************************************************************************************************************************************
     //<Getters
     public TextView getHours() {
         return hours;
     }
-
     public TextView getDisciplineText() {
-        return disciplineText;
+        return textViews.get(0);
     }
-
     public TextView getRoomText() {
-        return roomText;
+        return textViews.get(1);
     }
-
     public EditText getEditTextDiscipline() {
-        return editTextDiscipline;
+        return editTexts.get(0);
     }
     public EditText getEditTextRoom() {
-        return editTextRoom;
+        return editTexts.get(1);
     }
-
-    public ConstraintLayout getEditFrame() {
-        return editFrame;
-    }
-
-    public Button getEditButton() {
-        return editButton;
-    }
-
-    public ConstraintLayout getDeleteFrame() {
-        return deleteFrame;
-    }
-
-    public Button getDeleteButton() {
-        return deleteButton;
-    }
-
     public String[] getDisciplineDataString() {
         return disciplineDataString;
     }
-
     public String[] getRoomDataString() {
         return roomDataString;
     }
-
     public Context getContext() {
         return context;
     }
-
     public String getDISCIPLINE_FILE_NAME() {
         return DISCIPLINE_FILE_NAME;
     }
-
     public String getROOM_FILE_NAME() {
         return ROOM_FILE_NAME;
     }
     //Getters/>
+    //Getters and Setters/> **********************************************************************************************************************************************************
 
 
-    //<Setters
-    private void setDisciplineDataString(String[] dataString) {
-        this.disciplineDataString = dataString;
+
+    //<Click Handlers code **********************************************************************************************************************************************************
+    @OnClick({ R.id.edit_button, R.id.delete_button })
+    public void onClickButtons (Button button) {
+
+        switch (button.getId()) {
+            case R.id.edit_button : {
+                onClickEdit();
+                //set visibility off
+                onClickEditInvisible();
+                //this hides the keyboard after pressing the button
+                turnOffKeyboard(itemView);
+                //changes item's background color if text is entered
+                setBackgroundColor();
+            } break;
+            case R.id.delete_button : {
+                onClickDelete();
+                onClickEditInvisible();
+                //changes item's background color if text is entered
+                setBackgroundColor();
+            } break;
+        }
     }
 
-    private void setRoomDataString(String[] roomDataString) {
-        this.roomDataString = roomDataString;
-    }
-
-    public void setEditTextDiscipline(EditText editTextDiscipline) {
-        this.editTextDiscipline = editTextDiscipline;
-    }
-
-    public void setEditTextRoom(EditText editTextRoom) {
-        this.editTextRoom = editTextRoom;
-    }
-
-    //Setters/>
-
-
-    //<Click Handlers code
+    //creates visibility actions to use on visibility functions
+    ButterKnife.Action<View> INVISIBLE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(@NonNull View view, int index) {
+            view.setVisibility(View.INVISIBLE);
+        }
+    };
+    ButterKnife.Action<View> VISIBLE = new ButterKnife.Action<View>() {
+        @Override
+        public void apply(@NonNull View view, int index) {
+            view.setVisibility(View.VISIBLE);
+        }
+    };
 
     //sets to visible the edit interface
     public void onClickEditVisible() {
-
-        //text
-        getDisciplineText().setVisibility(View.INVISIBLE);
-        getRoomText().setVisibility(View.INVISIBLE);
-        //buttons
-        getEditTextDiscipline().setVisibility(View.VISIBLE);
-        getEditTextRoom().setVisibility(View.VISIBLE);
-        getEditButton().setVisibility(View.VISIBLE);
-        getEditFrame().setVisibility(View.VISIBLE);
-        getDeleteButton().setVisibility(View.VISIBLE);
-        getDeleteFrame().setVisibility(View.VISIBLE);
-
+        ButterKnife.apply(textViews, INVISIBLE);
+        ButterKnife.apply(editTexts, VISIBLE);
+        ButterKnife.apply(frames, VISIBLE);
+        ButterKnife.apply(buttons, VISIBLE);
     }
 
     //sets to invisible the edit interface
     public void onClickEditInvisible() {
-
-        //text
-        getDisciplineText().setVisibility(View.VISIBLE);
-        getRoomText().setVisibility(View.VISIBLE);
-        //buttons
-        getEditTextDiscipline().setVisibility(View.INVISIBLE);
-        getEditTextRoom().setVisibility(View.INVISIBLE);
-        getEditButton().setVisibility(View.INVISIBLE);
-        getEditFrame().setVisibility(View.INVISIBLE);
-        getDeleteButton().setVisibility(View.INVISIBLE);
-        getDeleteFrame().setVisibility(View.INVISIBLE);
-
-        //clears the text from the input view
-        getEditTextDiscipline().getText().clear();
-        getEditTextRoom().getText().clear();
-
+        ButterKnife.apply(textViews, VISIBLE);
+        ButterKnife.apply(editTexts, INVISIBLE);
+        ButterKnife.apply(frames, INVISIBLE);
+        ButterKnife.apply(buttons, INVISIBLE);
     }
 
     //refreshes data strings and calls the text storage function
-    public void onButtonClick() {
+    public void onClickEdit() {
         int viewPosition = getAdapterPosition();
 
         String insertedTextDiscipline = getEditTextDiscipline().getText().toString();
@@ -282,7 +206,6 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
             getRoomDataString()[viewPosition] = insertedTextRoom;
             DataStore.store(getContext(), getROOM_FILE_NAME(), getRoomDataString());
         }
-
     }
 
     public void onClickDelete () {
@@ -293,13 +216,41 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         getRoomDataString()[getAdapterPosition()] = " ";
         DataStore.store(getContext(), getDISCIPLINE_FILE_NAME(), getDisciplineDataString());
         DataStore.store(getContext(), getROOM_FILE_NAME(), getRoomDataString());
-
     }
-    //Click Handlers code/>
+    //Click Handlers code/> **********************************************************************************************************************************************************
+
+
+
+    //<Helpers **********************************************************************************************************************************************************
+    //checks if there is another item being edited
+    public boolean isAnotherUnderEdit(View v) {
+        if (Data.holderUnderEdit != null && !Data.holderUnderEdit.equals(v.getTag())) {
+            return true;
+        }
+        return false;
+    }
+
+    //stores the holder being edited in the data store
+    public void bindUnderEdit (View v) {
+        Data.holderUnderEdit = (RecyclerVHolder) v.getTag();
+    }
+
+    //resets reference if there was another item being added
+    public void unbindUnderEdit(View v) {
+        Data.holderUnderEdit.onClickEditInvisible();
+        Data.holderUnderEdit.setBackgroundColor();
+        Data.holderUnderEdit = null;
+    }
+
+    //turns keyboard off after clicking the edit or delete button
+    public void turnOffKeyboard(View v) {
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
 
     //checks if item is being edited. returns true if it is, and false if it isn't
     public boolean isEditVisible() {
-        return editFrame.getVisibility() == View.VISIBLE;
+        return frames.get(0).getVisibility() == View.VISIBLE;
     }
 
     //checks if text is null or whitespace
@@ -310,7 +261,6 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         if (text.trim().length() > 0) {
             return false;
         }
-
         return true;
     }
 
@@ -322,7 +272,6 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         if (text.trim().length() > 0) {
             return false;
         }
-
         return true;
     }
 
@@ -335,10 +284,13 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    private void setEditingColor (View v) {
+        v.setBackgroundColor(res.getColor(R.color.colorPrimary));
+    }
+
     //recovers the text from the view and put it in EditText
     //so the user won't need to write it again in case he/she wants to edit
     public void recoverEditText() {
-
         if (!isDisciplineTextEmpty()) {
             getEditTextDiscipline().setText(getDisciplineText().getText().toString());
         }
@@ -346,6 +298,6 @@ public class RecyclerVHolder extends RecyclerView.ViewHolder {
             getEditTextRoom().setText(getRoomText().getText().toString());
         }
     }
+    //Helpers/> **********************************************************************************************************************************************************
 
 }
-

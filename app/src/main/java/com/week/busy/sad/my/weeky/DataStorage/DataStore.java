@@ -8,14 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- * Created by user on 24/03/2018.
- */
-
-//This class stores the information of the fragments. holders access them to get update their text file/
+//This class stores the information about fragments. holders access them to update their text file
 //It also provides the functions needed to created the text files that will store the data
 
 public final class DataStore {
