@@ -12,7 +12,7 @@ import android.support.v4.view.ViewPager;
 import com.week.busy.sad.my.weeky.DataStorage.Data;
 import com.week.busy.sad.my.weeky.fragments.scripts.DayFragments;
 
-import butterknife.BindView;
+
 
 public class DaysActivity extends FragmentActivity {
 
@@ -29,10 +29,10 @@ public class DaysActivity extends FragmentActivity {
         res = getResources();
         setContentView(R.layout.activity_days);
 
-        viewPager = (ViewPager) findViewById(R.id.days_view_pager);
+        viewPager = findViewById(R.id.days_view_pager);
         FragmentManager fragmentManager = getSupportFragmentManager();
         viewPager.setAdapter(new PageAdapter(fragmentManager));
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.days_tabs);
+        TabLayout tabLayout = findViewById(R.id.days_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
 
